@@ -74,17 +74,18 @@ def result_lines(poll: Poll) -> list[str]:
 
     Every option tied for the most votes gets the trophy. Nobody leads a poll with no votes.
     """
+    counts = tally(poll)
     total = total_votes(poll)
-    most = max(poll["votes"].values())
+    most = max((votes for _, votes in counts), default=0)
     lines = []
-    for option, votes in tally(poll):
+    for option, votes in counts:
         noun = "vote" if votes == 1 else "votes"
         trophy = " 🏆" if votes and votes == most else ""
-        lines.append(f"{option} — {_share(votes, total)} ({votes} {noun}){trophy}")
+        lines.append(f"{option} — {_percent(votes, total)} ({votes} {noun}){trophy}")
     return lines
 
 
-def _share(votes: int, total: int) -> str:
+def _percent(votes: int, total: int) -> str:
     """`votes` out of `total` as a percentage with one decimal, such as "33.3%".
 
     Integer arithmetic, so that an exact half rounds up (6.25 → 6.3). `round()` and float
