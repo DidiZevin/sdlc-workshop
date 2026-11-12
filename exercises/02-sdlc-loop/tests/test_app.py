@@ -34,6 +34,11 @@ def test_create_a_poll_then_vote():
 
     assert store.load()["votes"] == {"Pizza": 0, "Sushi": 1}
     assert "1 votes so far" in app.caption[0].value
+    assert len(app.get("vega_lite_chart")) == 1
+    assert [line.value for line in app.text] == [
+        "Pizza — 0.0% (0 votes)",
+        "Sushi — 100.0% (1 vote) 🏆",
+    ]
 
 
 def test_invalid_poll_shows_an_error():

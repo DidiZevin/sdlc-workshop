@@ -6,7 +6,7 @@ import pandas as pd
 import streamlit as st
 
 from poll import store
-from poll.core import create_poll, created_label, tally, total_votes, vote
+from poll.core import create_poll, created_label, result_lines, tally, total_votes, vote
 
 st.set_page_config(page_title="Live Poll", page_icon="🗳️")
 st.title("🗳️ Live Poll")
@@ -43,6 +43,8 @@ st.bar_chart(results)
 st.caption(f"{total_votes(poll)} votes so far")
 if label := created_label(poll):
     st.caption(label)
+for line in result_lines(poll):
+    st.text(line)
 
 if st.button("Reset poll"):
     store.clear()
