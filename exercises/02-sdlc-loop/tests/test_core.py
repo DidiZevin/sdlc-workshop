@@ -1,12 +1,22 @@
+from copy import deepcopy
 from datetime import datetime
 
 import pytest
 
-from poll.core import create_poll, created_label, tally, total_votes, vote
+from poll.core import create_poll, created_label, result_lines, tally, total_votes, vote
 
 
 def make_poll():
     return create_poll("Lunch?", ["Pizza", "Sushi", "Salad"])
+
+
+def poll_with_votes(**votes):
+    """A poll whose options are the keyword names, each voted for the given number of times."""
+    poll = create_poll("Lunch?", list(votes))
+    for option, count in votes.items():
+        for _ in range(count):
+            poll = vote(poll, option)
+    return poll
 
 
 def test_create_poll_starts_with_zero_votes():
@@ -99,3 +109,49 @@ def test_total_votes_counts_every_vote():
 
 def test_total_votes_is_zero_for_a_new_poll():
     assert total_votes(make_poll()) == 0
+
+
+def test_result_lines_show_share_and_count_in_creation_order():
+    poll = poll_with_votes(Pizza=2, Sushi=1, Salad=0)
+
+    assert result_lines(poll) == [
+        "Pizza — 66.7% (2 votes)",
+        "Sushi — 33.3% (1 vote)",
+        "Salad — 0.0% (0 votes)",
+    ]
+
+
+def test_result_lines_show_zero_percent_when_nobody_voted():
+    assert result_lines(make_poll()) == [
+        "Pizza — 0.0% (0 votes)",
+        "Sushi — 0.0% (0 votes)",
+        "Salad — 0.0% (0 votes)",
+    ]
+
+
+def test_result_lines_always_show_one_decimal():
+    assert result_lines(poll_with_votes(Pizza=1, Sushi=1))[0].startswith("Pizza — 50.0% ")
+    assert result_lines(poll_with_votes(Pizza=3, Sushi=0))[0].startswith("Pizza — 100.0% ")
+
+
+def test_result_lines_say_vote_in_the_singular():
+    lines = result_lines(poll_with_votes(Pizza=1, Sushi=2))
+
+    assert lines[0].endswith("(1 vote)")
+    assert lines[1].endswith("(2 votes)")
+
+
+def test_result_lines_round_an_exact_half_up():
+    lines = result_lines(poll_with_votes(Pizza=1, Sushi=15))
+
+    assert lines[0].startswith("Pizza — 6.3% ")
+    assert lines[1].startswith("Sushi — 93.8% ")
+
+
+def test_result_lines_leave_the_poll_unchanged():
+    poll = poll_with_votes(Pizza=2, Sushi=1)
+    before = deepcopy(poll)
+
+    result_lines(poll)
+
+    assert poll == before

@@ -67,3 +67,23 @@ def tally(poll: Poll) -> list[tuple[str, int]]:
 
 def total_votes(poll: Poll) -> int:
     return sum(poll["votes"].values())
+
+
+def result_lines(poll: Poll) -> list[str]:
+    """One display line per option, in creation order, such as "Pizza — 66.7% (2 votes)"."""
+    total = total_votes(poll)
+    lines = []
+    for option, votes in tally(poll):
+        noun = "vote" if votes == 1 else "votes"
+        lines.append(f"{option} — {_share(votes, total)} ({votes} {noun})")
+    return lines
+
+
+def _share(votes: int, total: int) -> str:
+    """`votes` out of `total` as a percentage with one decimal, such as "33.3%".
+
+    Integer arithmetic, so that an exact half rounds up (6.25 → 6.3). `round()` and float
+    formatting would round it down to 6.2.
+    """
+    tenths = (2000 * votes + total) // (2 * total) if total else 0
+    return f"{tenths // 10}.{tenths % 10}%"
