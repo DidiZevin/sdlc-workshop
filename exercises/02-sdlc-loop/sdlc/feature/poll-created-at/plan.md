@@ -110,8 +110,8 @@ captions.
 - [x] /sdlc:spec: approved 2026-11-12 after 4 questions
 - [x] /sdlc:plan: 3 tasks
 - [x] /sdlc:build: 3 of 3 tasks done
-- [x] /sdlc:test: 10 criteria and 12 edge cases mapped, 4 gaps closed, no bug found; open: no assertion that the bar chart is still rendered (criterion 9)
-- [x] /sdlc:review: 8 findings: 4 fixed, 3 won't fix, 1 open (process: pending commits and a nested clone of the repo in the exercise folder)
+- [x] /sdlc:test: 10 criteria and 12 edge cases mapped, 4 gaps closed, no bug found; the one gap left open here (no assertion that the bar chart is still rendered, criterion 9) was closed by review fix 2
+- [x] /sdlc:review: 8 findings: 4 fixed, 3 won't fix, 1 open (process: the pending commits were made afterwards; an untracked nested clone of the repo is still in the exercise folder)
 - [x] /sdlc:code-simplify: nothing to simplify; no code changed
 
 ## Test evidence
