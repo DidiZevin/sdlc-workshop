@@ -173,6 +173,40 @@ def test_result_lines_have_no_trophy_when_nobody_voted():
     assert all("🏆" not in line for line in result_lines(make_poll()))
 
 
+def test_result_lines_give_a_unanimous_leader_the_trophy():
+    assert result_lines(poll_with_votes(Pizza=3, Sushi=0)) == [
+        "Pizza — 100.0% (3 votes) 🏆",
+        "Sushi — 0.0% (0 votes)",
+    ]
+
+
+def test_result_lines_do_not_give_a_trophy_for_a_tie_for_second_place():
+    assert result_lines(poll_with_votes(Pizza=3, Sushi=1, Salad=1)) == [
+        "Pizza — 60.0% (3 votes) 🏆",
+        "Sushi — 20.0% (1 vote)",
+        "Salad — 20.0% (1 vote)",
+    ]
+
+
+def test_result_lines_round_an_exact_half_up_for_other_totals():
+    assert result_lines(poll_with_votes(Pizza=5, Sushi=11)) == [
+        "Pizza — 31.3% (5 votes)",
+        "Sushi — 68.8% (11 votes) 🏆",
+    ]
+    assert result_lines(poll_with_votes(Pizza=1, Sushi=399)) == [
+        "Pizza — 0.3% (1 vote)",
+        "Sushi — 99.8% (399 votes) 🏆",
+    ]
+
+
+def test_result_lines_shares_may_add_up_to_more_than_100_percent():
+    assert result_lines(poll_with_votes(Pizza=1, Sushi=1, Salad=4)) == [
+        "Pizza — 16.7% (1 vote)",
+        "Sushi — 16.7% (1 vote)",
+        "Salad — 66.7% (4 votes) 🏆",
+    ]
+
+
 def test_result_lines_leave_the_poll_unchanged():
     poll = poll_with_votes(Pizza=2, Sushi=1)
     before = deepcopy(poll)
