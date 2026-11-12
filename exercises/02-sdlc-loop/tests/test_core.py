@@ -1,6 +1,8 @@
+from datetime import datetime
+
 import pytest
 
-from poll.core import create_poll, tally, total_votes, vote
+from poll.core import create_poll, created_label, tally, total_votes, vote
 
 
 def make_poll():
@@ -35,6 +37,32 @@ def test_create_poll_needs_two_options():
 def test_create_poll_rejects_duplicate_options():
     with pytest.raises(ValueError, match="unique"):
         create_poll("Lunch?", ["Pizza", "Pizza"])
+
+
+def test_create_poll_records_when_it_was_created():
+    poll = create_poll("Lunch?", ["Pizza", "Sushi"], created_at=datetime(2026, 11, 12, 14, 30, 5))
+
+    assert poll["created_at"] == "2026-11-12T14:30:05"
+
+
+def test_create_poll_without_a_time_has_no_created_at():
+    assert "created_at" not in make_poll()
+
+
+def test_vote_keeps_the_creation_time():
+    poll = create_poll("Lunch?", ["Pizza", "Sushi"], created_at=datetime(2026, 11, 12, 14, 30))
+
+    assert vote(poll, "Pizza")["created_at"] == poll["created_at"]
+
+
+def test_created_label_shows_date_and_time_to_the_minute():
+    poll = create_poll("Lunch?", ["Pizza", "Sushi"], created_at=datetime(2026, 11, 12, 14, 30, 5))
+
+    assert created_label(poll) == "Created 2026-11-12 14:30"
+
+
+def test_created_label_is_none_for_a_poll_saved_before_the_feature():
+    assert created_label(make_poll()) is None
 
 
 def test_vote_adds_one_vote_to_the_option():

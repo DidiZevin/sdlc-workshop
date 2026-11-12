@@ -6,17 +6,26 @@ function takes a poll and returns a value or a new poll.
 
 from __future__ import annotations
 
+from datetime import datetime
 from typing import TypedDict
 
 
-class Poll(TypedDict):
+class _RequiredPoll(TypedDict):
     question: str
     options: list[str]
     votes: dict[str, int]
 
 
-def create_poll(question: str, options: list[str]) -> Poll:
-    """Return a new poll with zero votes. Surrounding whitespace and blank options are dropped."""
+class Poll(_RequiredPoll, total=False):
+    # ISO 8601, to the second. Missing on polls saved before creation time was recorded.
+    created_at: str
+
+
+def create_poll(question: str, options: list[str], created_at: datetime | None = None) -> Poll:
+    """Return a new poll with zero votes. Surrounding whitespace and blank options are dropped.
+
+    The caller supplies `created_at`, so this module never reads the clock.
+    """
     question = question.strip()
     cleaned = [option.strip() for option in options if option.strip()]
     if not question:
@@ -25,7 +34,22 @@ def create_poll(question: str, options: list[str]) -> Poll:
         raise ValueError("A poll needs at least two options.")
     if len(set(cleaned)) != len(cleaned):
         raise ValueError("Options must be unique.")
-    return {"question": question, "options": cleaned, "votes": {option: 0 for option in cleaned}}
+    poll: Poll = {
+        "question": question,
+        "options": cleaned,
+        "votes": {option: 0 for option in cleaned},
+    }
+    if created_at is not None:
+        poll["created_at"] = created_at.isoformat(timespec="seconds")
+    return poll
+
+
+def created_label(poll: Poll) -> str | None:
+    """A line such as "Created 2026-11-12 14:30", or None when the poll has no creation time."""
+    created_at = poll.get("created_at")
+    if created_at is None:
+        return None
+    return f"Created {datetime.fromisoformat(created_at):%Y-%m-%d %H:%M}"
 
 
 def vote(poll: Poll, option: str) -> Poll:

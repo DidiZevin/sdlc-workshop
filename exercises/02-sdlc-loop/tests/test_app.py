@@ -27,6 +27,7 @@ def test_create_a_poll_then_vote():
     app.button[0].click().run()
 
     assert app.subheader[0].value == "Lunch?"
+    assert app.caption[1].value.startswith("Created ")
 
     app.radio[0].set_value("Sushi")
     app.button[0].click().run()
