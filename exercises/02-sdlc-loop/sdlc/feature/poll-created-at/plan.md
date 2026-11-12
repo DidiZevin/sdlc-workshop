@@ -26,7 +26,9 @@ Two implementation decisions:
   Markdown. Placing the list after the existing captions keeps `caption[0]` and `caption[1]`
   in `tests/test_app.py` pointing at what they point at today.
 
-Nothing is stored: `Poll` and `poll.json` are unchanged, and `poll/store.py` is not touched.
+This feature stores nothing: it leaves `Poll` and `poll.json` as it found them, and
+`poll/store.py` is not touched. (The branch as a whole does add an optional `created_at` key,
+from the earlier "created at" change; see the "Creation time" section of the spec.)
 
 ## Tasks
 
@@ -107,9 +109,9 @@ captions.
 
 - [x] /sdlc:spec: approved 2026-11-12 after 4 questions
 - [x] /sdlc:plan: 3 tasks
-- [x] /sdlc:build: tasks 1 and 2 of 3 done
-- [ ] /sdlc:test
-- [ ] /sdlc:review
+- [x] /sdlc:build: 3 of 3 tasks done
+- [x] /sdlc:test: 10 criteria and 12 edge cases mapped, 4 gaps closed, no bug found; open: no assertion that the bar chart is still rendered (criterion 9)
+- [x] /sdlc:review: 8 findings: 4 fixed, 3 won't fix, 1 open (process: pending commits and a nested clone of the repo in the exercise folder)
 - [ ] /sdlc:code-simplify
 
 ## Test evidence
@@ -119,3 +121,7 @@ captions.
 - 2026-11-12 · task 1 GREEN (run by the user) · `uv run python -m pytest -q` → 28 passed · `uv run python -m ruff check .` → All checks passed!
 - 2026-11-12 · task 2 RED (run by the user) · `uv run python -m pytest tests/test_core.py -q` → 3 failed, 22 passed: the three trophy tests fail on the missing 🏆 (expected)
 - 2026-11-12 · task 2 GREEN (run by the user) · `uv run python -m pytest -q` → 31 passed · `uv run python -m ruff check .` → All checks passed!
+- 2026-11-12 11:57 · task 3 RED (run by the user) · `uv run python -m pytest tests/test_app.py -q` → 1 failed, 1 passed: `test_create_a_poll_then_vote` fails with `assert [] == ['Pizza — 0.0...% (1 vote) 🏆']` (expected)
+- 2026-11-12 · task 3 GREEN (run by the user) · `uv run python -m pytest -q` → 31 passed · `uv run python -m ruff check .` → All checks passed!
+- 2026-11-12 · /sdlc:test gap pass, 4 regression tests added (run by the user) · `uv run python -m pytest -q` → 35 passed · `uv run python -m ruff check .` → All checks passed!
+- 2026-11-12 · after review fixes 2, 3 and 7 (run by the user) · `uv run python -m pytest -q` → 35 passed · `uv run python -m ruff check .` → All checks passed!
