@@ -107,7 +107,7 @@ captions.
 
 - [x] /sdlc:spec: approved 2026-11-12 after 4 questions
 - [x] /sdlc:plan: 3 tasks
-- [x] /sdlc:build: task 1 of 3 done
+- [x] /sdlc:build: tasks 1 and 2 of 3 done
 - [ ] /sdlc:test
 - [ ] /sdlc:review
 - [ ] /sdlc:code-simplify
@@ -117,3 +117,5 @@ captions.
 - 2026-11-12 · baseline before task 1 (run by the user) · `uv run python -m pytest -q` → 22 passed · `uv run python -m ruff check .` → All checks passed!
 - 2026-11-12 · task 1 RED (run by the user) · `uv run python -m pytest tests/test_core.py -q` → 1 error during collection: `ImportError: cannot import name 'result_lines' from 'poll.core'` (expected)
 - 2026-11-12 · task 1 GREEN (run by the user) · `uv run python -m pytest -q` → 28 passed · `uv run python -m ruff check .` → All checks passed!
+- 2026-11-12 · task 2 RED (run by the user) · `uv run python -m pytest tests/test_core.py -q` → 3 failed, 22 passed: the three trophy tests fail on the missing 🏆 (expected)
+- 2026-11-12 · task 2 GREEN (run by the user) · `uv run python -m pytest -q` → 31 passed · `uv run python -m ruff check .` → All checks passed!

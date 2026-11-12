@@ -115,7 +115,7 @@ def test_result_lines_show_share_and_count_in_creation_order():
     poll = poll_with_votes(Pizza=2, Sushi=1, Salad=0)
 
     assert result_lines(poll) == [
-        "Pizza — 66.7% (2 votes)",
+        "Pizza — 66.7% (2 votes) 🏆",
         "Sushi — 33.3% (1 vote)",
         "Salad — 0.0% (0 votes)",
     ]
@@ -135,7 +135,7 @@ def test_result_lines_always_show_one_decimal():
 
 
 def test_result_lines_say_vote_in_the_singular():
-    lines = result_lines(poll_with_votes(Pizza=1, Sushi=2))
+    lines = result_lines(poll_with_votes(Pizza=1, Sushi=2, Salad=3))
 
     assert lines[0].endswith("(1 vote)")
     assert lines[1].endswith("(2 votes)")
@@ -146,6 +146,31 @@ def test_result_lines_round_an_exact_half_up():
 
     assert lines[0].startswith("Pizza — 6.3% ")
     assert lines[1].startswith("Sushi — 93.8% ")
+
+
+def test_result_lines_mark_the_single_leader_with_a_trophy():
+    lines = result_lines(poll_with_votes(Pizza=1, Sushi=3, Salad=2))
+
+    assert lines[1].endswith(" 🏆")
+    assert "🏆" not in lines[0]
+    assert "🏆" not in lines[2]
+
+
+def test_result_lines_give_every_tied_leader_a_trophy():
+    assert result_lines(poll_with_votes(Pizza=2, Sushi=1, Salad=2)) == [
+        "Pizza — 40.0% (2 votes) 🏆",
+        "Sushi — 20.0% (1 vote)",
+        "Salad — 40.0% (2 votes) 🏆",
+    ]
+    assert result_lines(poll_with_votes(Pizza=1, Sushi=1, Salad=1)) == [
+        "Pizza — 33.3% (1 vote) 🏆",
+        "Sushi — 33.3% (1 vote) 🏆",
+        "Salad — 33.3% (1 vote) 🏆",
+    ]
+
+
+def test_result_lines_have_no_trophy_when_nobody_voted():
+    assert all("🏆" not in line for line in result_lines(make_poll()))
 
 
 def test_result_lines_leave_the_poll_unchanged():

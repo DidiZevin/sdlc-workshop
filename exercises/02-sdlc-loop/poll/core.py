@@ -70,12 +70,17 @@ def total_votes(poll: Poll) -> int:
 
 
 def result_lines(poll: Poll) -> list[str]:
-    """One display line per option, in creation order, such as "Pizza — 66.7% (2 votes)"."""
+    """One display line per option, in creation order, such as "Pizza — 66.7% (2 votes) 🏆".
+
+    Every option tied for the most votes gets the trophy. Nobody leads a poll with no votes.
+    """
     total = total_votes(poll)
+    most = max(poll["votes"].values())
     lines = []
     for option, votes in tally(poll):
         noun = "vote" if votes == 1 else "votes"
-        lines.append(f"{option} — {_share(votes, total)} ({votes} {noun})")
+        trophy = " 🏆" if votes and votes == most else ""
+        lines.append(f"{option} — {_share(votes, total)} ({votes} {noun}){trophy}")
     return lines
 
 
