@@ -112,7 +112,7 @@ captions.
 - [x] /sdlc:build: 3 of 3 tasks done
 - [x] /sdlc:test: 10 criteria and 12 edge cases mapped, 4 gaps closed, no bug found; open: no assertion that the bar chart is still rendered (criterion 9)
 - [x] /sdlc:review: 8 findings: 4 fixed, 3 won't fix, 1 open (process: pending commits and a nested clone of the repo in the exercise folder)
-- [ ] /sdlc:code-simplify
+- [x] /sdlc:code-simplify: nothing to simplify; no code changed
 
 ## Test evidence
 
@@ -125,3 +125,4 @@ captions.
 - 2026-11-12 · task 3 GREEN (run by the user) · `uv run python -m pytest -q` → 31 passed · `uv run python -m ruff check .` → All checks passed!
 - 2026-11-12 · /sdlc:test gap pass, 4 regression tests added (run by the user) · `uv run python -m pytest -q` → 35 passed · `uv run python -m ruff check .` → All checks passed!
 - 2026-11-12 · after review fixes 2, 3 and 7 (run by the user) · `uv run python -m pytest -q` → 35 passed · `uv run python -m ruff check .` → All checks passed!
+- 2026-11-12 · /sdlc:code-simplify · no code changed, so no new run; the run above is the latest and covers the current code
